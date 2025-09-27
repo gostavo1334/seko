@@ -1,0 +1,45 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Backend tests
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: Install Composer dependencies
+        working-directory: ./backend
+        run: composer install
+      - name: Run Laravel tests
+        working-directory: ./backend
+        run: php artisan test
+
+      # Frontend tests
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install npm dependencies
+        working-directory: ./frontend
+        run: npm install
+      - name: Run frontend tests
+        working-directory: ./frontend
+        run: npm test
+
+  deploy:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify for manual deployment
+        run: echo "Merge detected. Please pull changes and restart ngrok on your Windows server."
