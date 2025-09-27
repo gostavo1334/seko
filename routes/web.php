@@ -3,10 +3,10 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OurProController;
-use App\Http\Controllers\ProfileController;
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LanguageController;
+
 use App\Http\Controllers\OurTeamController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ImageFooterController;
@@ -42,7 +42,7 @@ Route::get('/products/{product}', [CartController::class, 'show'])->name('produc
 
 
 
-Route::middleware(['auth'])->group(function () {
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/products', [DashboardController::class, 'index'])->name('dashboard.products.index');
     Route::get('/dashboard/products/create', [DashboardController::class, 'create'])->name('dashboard.products.create');
@@ -77,16 +77,7 @@ Route::delete('/images/{image}', [ImageFooterController::class, 'destroy'])->nam
    // Route::resource('/dashboard/image/uploard', [ImageFooterController::class, 'index'])->name('ProcessImages');
 
 
-});
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-});
 
 
 
 
-require __DIR__.'/auth.php';
