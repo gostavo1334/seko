@@ -19,7 +19,8 @@ class DashboardController extends Controller
 // DashboardController.php
  public function create()
     {
-        return view('create');
+         Product::create();
+        return redirect()->route('dashboard.dashboard')->with('success', 'Product added successfully!');
     }
 
 public function store(Request $request)
@@ -48,7 +49,7 @@ public function store(Request $request)
 
     Product::create($productData);
 
-    return redirect()->route('dashboard.dashboard')->with('success', 'Product added successfully!');
+    return redirect()->route('dashboard')->with('success', 'Product added successfully!');
 }
     public function destroy(Product $product)
 {

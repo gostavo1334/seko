@@ -1,45 +1,53 @@
 name: CI/CD Pipeline
 
 on:
-  pull_request:
-    branches: [master]
   push:
-    branches: [master]
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
+# This top-level "jobs" key is what was missing.
 jobs:
+  # The "test" job is now correctly indented under "jobs".
   test:
     runs-on: ubuntu-latest
     steps:
+      # 1. Get the code from your repository
       - uses: actions/checkout@v4
 
-      # Backend tests
+      # 2. Setup PHP for Laravel
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
-      - name: Install Composer dependencies
-        working-directory: ./backend
-        run: composer install
-      - name: Run Laravel tests
-        working-directory: ./backend
+          php-version: '8.2' # Change to your project's PHP version
+
+      # 3. Install PHP dependencies
+      - name: Install Composer Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      # 4. Prepare the Laravel environment
+      - name: Prepare Laravel Application
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      # 5. Install JavaScript dependencies
+      - name: Install NPM Dependencies
+        run: npm install
+
+      # 6. Run backend tests (PHPUnit)
+      - name: Run Backend Tests
         run: php artisan test
 
-      # Frontend tests
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install npm dependencies
-        working-directory: ./frontend
-        run: npm install
-      - name: Run frontend tests
-        working-directory: ./frontend
+      # 7. Run frontend tests (if you have them in package.json)
+      - name: Run Frontend Tests
         run: npm test
 
+  # The "deploy" job is also correctly indented under "jobs".
   deploy:
     needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Notify for manual deployment
-        run: echo "Merge detected. Please pull changes and restart ngrok on your Windows server."
+        run: echo "Merge detected. Please pull changes and restart ngrok on your windows server."

@@ -9,12 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
-    {
-        Schema::table('process_images', function (Blueprint $table) {
-            $table->string('image_path')->after('id');
-        });
-    }
+   public function up()
+{
+    Schema::create('process_images', function (Blueprint $table) {
+        $table->id();
+        $table->string('image_path');
+        // Add other columns as needed
+        $table->timestamps();
+    });
+}
 
     public function down()
     {
